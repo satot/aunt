@@ -2,23 +2,26 @@ import unittest
 from collections import defaultdict
 
 class Solution:
-    def is_permutation(self, m1, s:str) -> bool:
-        m2 = defaultdict(int)
-        for c in s:
-            m2[c] += 1
+    def is_permutation(self, m1, m2) -> bool:
         for k in m1.keys():
             if m1[k] != m2[k]:
                 return False
         return True
 
     def checkInclusion(self, s1: str, s2: str) -> bool:
-        m1 = defaultdict(int)
+        m1, m2 = defaultdict(int), defaultdict(int)
         for c in s1:
             m1[c] += 1
         left = 0
         while left <= len(s2) - len(s1):
             right = left + len(s1)
-            if self.is_permutation(m1, s2[left:right]):
+            if left == 0:
+                for c in s2[left:right]:
+                    m2[c] += 1
+            else:
+                m2[s2[left-1]] -= 1
+                m2[s2[right-1]] += 1
+            if self.is_permutation(m1, m2):
                 return True
             left += 1
         return False
@@ -37,8 +40,8 @@ class TestSolution(unittest.TestCase):
         self.assertFalse(s.checkInclusion(s1, s2))
 
     def test3(self):
-        s1 = "ooda"
-        s2 = "eidboaod"
+        s1 = "e"
+        s2 = "e"
         self.assertTrue(s.checkInclusion(s1, s2))
 
     def test9(self):
